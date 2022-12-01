@@ -28,7 +28,7 @@
                   </v-icon>
                 </v-col>
                 <v-col class="ml-5">
-                  <v-card-title> All Plots </v-card-title>
+                  <v-card-title> My Plots </v-card-title>
                   <v-card-subtitle> 00000 </v-card-subtitle>
                 </v-col>
               </v-row>
@@ -39,7 +39,7 @@
       <v-col cols="12" lg="3" md="3" sm="3">
         <v-card
           class="m-2 top"
-          style="border-bottom: 10px solid #A58A05 !important"
+          style="border-bottom: 10px solid #a58a05 !important"
         >
           <v-row justify="space-between">
             <v-col>
@@ -62,7 +62,7 @@
           </v-row>
         </v-card>
       </v-col>
-       <v-col cols="12" lg="3" md="3" sm="3">
+      <v-col cols="12" lg="3" md="3" sm="3">
         <v-card
           class="m-2 top"
           style="border-bottom: 10px solid #2c7221 !important"
@@ -115,23 +115,64 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row class="pl-4 pr-4 mt-5">
+    <v-row class="pl-4 pr-4 mt-5" v-if="!isNewPlot">
       <v-col>
         <v-card>
           <v-row>
             <v-card-title class="ml-3">Recent Actvities</v-card-title>
             <v-spacer />
+            <v-btn
+              elevation="0"
+              color="primary"
+              v-if="isTrees"
+              class="mr-5 mt-3"
+              @click="dialog = true"
+              >Register New Tress Planted
+              <v-icon>mdi-plus-circle</v-icon></v-btn
+            >
+            <v-btn
+              elevation="0"
+              color="primary"
+              v-if="isRequest"
+              class="mr-5 mt-3"
+              @click="dialogRequest = true"
+              >Request Harvest <v-icon>mdi-plus-circle</v-icon></v-btn
+            >
+            <v-btn
+              elevation="0"
+              color="primary"
+              v-if="isPlot"
+              class="mr-5 mt-3"
+              @click="isNewPlot = true"
+              >Register New Plot <v-icon>mdi-plus-circle</v-icon></v-btn
+            >
           </v-row>
           <v-card-text>
-            <v-tabs
-              background-color="#4e776f"
-              centered
-              dark
-              icons-and-text
-            >
-              <v-tab>Planted trees</v-tab>
-              <v-tab>Harvest Requests</v-tab>
-              <v-tab>Plots registration</v-tab>
+            <v-tabs background-color="#4e776f" centered dark icons-and-text>
+              <v-tab
+                @click="
+                  isTrees = true
+                  isRequest = false
+                  isPlot = false
+                "
+                >Planted trees</v-tab
+              >
+              <v-tab
+                @click="
+                  isTrees = false
+                  isRequest = true
+                  isPlot = false
+                "
+                >Harvest Requests</v-tab
+              >
+              <v-tab
+                @click="
+                  isTrees = false
+                  isRequest = false
+                  isPlot = true
+                "
+                >Plots registration</v-tab
+              >
               <v-tab-item>
                 <v-data-table
                   :headers="treesHeaders"
@@ -160,17 +201,144 @@
                 </v-data-table>
               </v-tab-item>
             </v-tabs>
+            <v-dialog v-model="dialog" max-width="490">
+              <v-card>
+                <v-card-title class="text-h5"
+                  >Register New Plantation</v-card-title
+                >
+                <v-card-text class="pl-4 pr-4">
+                  <validation-observer ref="form">
+                    <label contenteditable="true">Category </label>
+                    <validation-provider rules="required" v-slot="{ errors }">
+                      <v-autocomplete
+                        v-model="category"
+                        :error="errors[0] ? true : false"
+                        :items="categoryItems"
+                        outlined
+                        dense
+                        chips
+                        small-chips
+                        label="Outlined"
+                        multiple
+                      ></v-autocomplete>
+                    </validation-provider>
+                    <label contenteditable="true">Quantity</label>
+                    <validation-provider rules="required" v-slot="{ errors }">
+                      <v-text-field
+                        v-model="quantity"
+                        :error="errors[0] ? true : false"
+                        outlined
+                        type="text"
+                        dense
+                        class="new-group-field"
+                      ></v-text-field>
+                    </validation-provider>
+                  </validation-observer>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+
+                  <v-btn
+                    color="green darken-1"
+                    text
+                    @click="
+                      dialog = false
+                      title = ''
+                    "
+                  >
+                    Cancel
+                  </v-btn>
+
+                  <v-btn
+                    color="green darken-1"
+                    text
+                    @click="submit()"
+                    :loading="saveLoading"
+                  >
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogRequest" max-width="490">
+              <v-card>
+                <v-card-title class="text-h5"
+                  >Register New Plantation</v-card-title
+                >
+                <v-card-text class="pl-4 pr-4">
+                  <validation-observer ref="form">
+                    <label contenteditable="true">Category </label>
+                    <validation-provider rules="required" v-slot="{ errors }">
+                      <v-autocomplete
+                        v-model="category"
+                        :error="errors[0] ? true : false"
+                        :items="categoryItems"
+                        outlined
+                        dense
+                        chips
+                        small-chips
+                        label="Outlined"
+                        multiple
+                      ></v-autocomplete>
+                    </validation-provider>
+                    <label contenteditable="true">Quantity</label>
+                    <validation-provider rules="required" v-slot="{ errors }">
+                      <v-text-field
+                        v-model="quantity"
+                        :error="errors[0] ? true : false"
+                        outlined
+                        type="text"
+                        dense
+                        class="new-group-field"
+                      ></v-text-field>
+                    </validation-provider>
+                  </validation-observer>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+
+                  <v-btn
+                    color="green darken-1"
+                    text
+                    @click="
+                      dialog = false
+                      title = ''
+                    "
+                  >
+                    Cancel
+                  </v-btn>
+
+                  <v-btn
+                    color="green darken-1"
+                    text
+                    @click="submit()"
+                    :loading="saveLoading"
+                  >
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-card-text> </v-card
         >`
       </v-col>
-      <!-- <v-col v-if="isNew" cols="12" md="5" lg="5">
+    </v-row>
+    <v-row v-if="isNewPlot" justify="center" class="mt-5 mr-2 ml-2">
+      <v-col cols="12" md="12" lg="12">
         <v-card>
           <v-row justify="space-between" class="pl-4 pr-4">
-            <v-card-title> New Employee </v-card-title>
+            <v-col>
+              <v-card-title> Register Plot </v-card-title>
+              <v-card-subtitle>
+                Fill out this form
+              </v-card-subtitle>
+            </v-col>
             <v-btn
               x-small
               class="mr-3 mt-3"
-              @click="isNew = false"
+              @click="isNewPlot = false"
               fab
               elevation="0"
               color="error"
@@ -181,28 +349,47 @@
           <validation-observer ref="form">
             <v-card-text class="py-0">
               <v-col class="pb-0">
-                <label contenteditable="true">Names </label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="empName"
-                    :error="errors[0] ? true : false"
-                    outlined
-                    type="text"
-                    dense
-                    class="new-group-field"
-                  ></v-text-field>
-                </validation-provider>
-                <label>Employee Phone</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="empPhone"
-                    :error="errors[0] ? true : false"
-                    dense
-                    outlined
-                    class="new-group-field"
-                  ></v-text-field>
-                </validation-provider>
-                <label>Employee ID Number</label>
+                <v-row>
+                  <v-col>
+                    <label contenteditable="true">Names </label>
+                    <validation-provider rules="required" v-slot="{ errors }">
+                      <v-text-field
+                        v-model="empName"
+                        :error="errors[0] ? true : false"
+                        outlined
+                        type="text"
+                        dense
+                        class="new-group-field"
+                      ></v-text-field>
+                    </validation-provider>
+                  </v-col>
+                  <v-col>
+                    <label>Phone</label>
+                    <validation-provider rules="required" v-slot="{ errors }">
+                      <v-text-field
+                        v-model="empPhone"
+                        :error="errors[0] ? true : false"
+                        dense
+                        outlined
+                        class="new-group-field"
+                      ></v-text-field>
+                    </validation-provider>
+                  </v-col>
+                  <v-col>
+                    <label>Gender</label>
+                    <validation-provider rules="required" v-slot="{ errors }">
+                      <v-select
+                        v-model="empGender"
+                        :error="errors[0] ? true : false"
+                        dense
+                        :items="genderItems"
+                        outlined
+                        class="new-group-field"
+                      ></v-select>
+                    </validation-provider>
+                  </v-col>
+                </v-row>
+                <label>ID Number</label>
                 <validation-provider rules="required" v-slot="{ errors }">
                   <v-text-field
                     v-model="empId"
@@ -212,31 +399,9 @@
                     class="new-group-field"
                   ></v-text-field>
                 </validation-provider>
-                <label>Employee E-Mail</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="empEmail"
-                    :error="errors[0] ? true : false"
-                    dense
-                    outlined
-                    class="new-group-field"
-                  ></v-text-field>
-                </validation-provider>
-
-                <label>Employee Gender</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-select
-                    v-model="empGender"
-                    :error="errors[0] ? true : false"
-                    dense
-                    :items="genderItems"
-                    outlined
-                    class="new-group-field"
-                  ></v-select>
-                </validation-provider>
                 <v-row>
                   <v-col>
-                    <label>Employee department</label>
+                    <label>Provnce</label>
                     <validation-provider rules="required" v-slot="{ errors }">
                       <v-select
                         v-model="empDept"
@@ -249,7 +414,20 @@
                     </validation-provider>
                   </v-col>
                   <v-col>
-                    <label>Employee Post</label>
+                    <label>District</label>
+                    <validation-provider rules="required" v-slot="{ errors }">
+                      <v-select
+                        v-model="empPost"
+                        :error="errors[0] ? true : false"
+                        dense
+                        :items="postItems"
+                        outlined
+                        class="new-group-field"
+                      ></v-select>
+                    </validation-provider>
+                  </v-col>
+                  <v-col>
+                    <label>Sector</label>
                     <validation-provider rules="required" v-slot="{ errors }">
                       <v-select
                         v-model="empPost"
@@ -277,14 +455,18 @@
             </v-card-actions>
           </validation-observer>
         </v-card>
-      </v-col> -->
+      </v-col>
     </v-row>
   </v-app>
 </template>
 
 <script>
+import { ValidationProvider, ValidationObserver } from 'vee-validate'
 export default {
-  components: {},
+  components: {
+    ValidationProvider,
+    ValidationObserver,
+  },
   data() {
     return {
       pieChartData: {
@@ -396,13 +578,13 @@ export default {
       loading: false,
       saveLoading: false,
       isDetails: false,
-      isNew: false,
+      isNewPlot: false,
       genderItems: [
         { value: 'M', text: 'Male' },
         { value: 'F', text: 'Female' },
       ],
       treesHeaders: [
-      {
+        {
           text: 'Date',
           align: 'start',
           sortable: true,
@@ -415,6 +597,14 @@ export default {
         { text: 'Number of Tress', value: 'trees' },
       ],
       treesItems: [],
+      isTrees: true,
+      isRequest: false,
+      isPlot: false,
+      dialog: false,
+      dialogRequest: false,
+      category: '',
+      quantity: '',
+      categoryItems: [],
     }
   },
   mounted() {

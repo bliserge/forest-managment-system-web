@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <v-app id="inspire">
-    <v-system-bar app>
+    <!-- <v-system-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-spacer></v-spacer>
 
@@ -10,29 +10,43 @@
       <v-icon>mdi-circle</v-icon>
 
       <v-icon>mdi-triangle</v-icon>
-    </v-system-bar>
+    </v-system-bar> -->
 
-    <v-navigation-drawer v-model="drawer" app color="#010218" dark>
-      <v-sheet class="pa-4" color="#010218">
-        <v-icon color="#56baed" size="40">mdi-dots-square</v-icon>
+    <v-navigation-drawer v-model="drawer" app color="#F2F6F5" dark>
+      <v-sheet class="pa-4" color="#F2F6F5">
+        <v-row class="pa-4">
+          <v-icon color="#7B0000" size="40">mdi-logout</v-icon>
+        </v-row>
       </v-sheet>
 
-      <v-list style="margin-top: 55px;">
-          <nuxt-link v-for="(item, i) in links" :key="i" :to="item.to">
-            <v-list-item  link dark class="itemDiv" :id="'item' + i" @click="setActiveItem(i)">
-              <v-list-item-icon>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-item-icon>
-    
-              <v-list-item-content>
-                <v-list-item-title>{{ item.link }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </nuxt-link>
+      <v-list style="margin-top: 55px">
+        <nuxt-link v-for="(item, i) in links" :key="i" :to="item.to">
+          <v-list-item
+            link
+            dark
+            class="itemDiv"
+            :id="'item' + i"
+            @click="setActiveItem(i)"
+            dense
+          >
+            <v-list-item-icon>
+              <v-icon color="#fff">{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ item.link }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </nuxt-link>
       </v-list>
     </v-navigation-drawer>
+    <!-- <v-app-bar app>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-    <v-main>
+      <v-toolbar-title>Application</v-toolbar-title>
+    </v-app-bar> -->
+
+    <v-main class="grey lighten-3">
       <nuxt />
     </v-main>
   </v-app>
@@ -48,46 +62,52 @@ export default {
       {
         icon: 'mdi-bank',
         link: 'Home',
-        to: 'home'
-      },
-      {
-        icon: 'mdi-bank',
-        link: 'Students',
-        to: 'student'
-      },
-      {
-        icon: 'mdi-bank',
-        link: 'Instructors',
-        to: 'instructor'
+        to: 'home',
       },
     ],
   }),
 
+  mounted() {
+    if (localStorage.getItem('profile')) {
+      this.user = JSON.parse(localStorage.getItem('profile'))
+    }
+    this.links.push({
+        icon: 'mdi-file-document-outline',
+        link: 'Categories',
+        to: 'categories',
+      })
+      this.links.push({
+        icon: 'mdi-account-group',
+        link: 'Users',
+        to: 'users',
+      })
+  },
+  created() {
+    // this.setActiveItem(0)
+  },
+
   methods: {
     setActiveItem(index) {
-      console.log(index);
-      let n = document.getElementsByClassName("itemDiv");
+      let n = document.getElementsByClassName('itemDiv')
       for (let i = 0; i < n.length; i++) {
-        console.log(n[i].classList.remove("active"));
+        n[i].classList.remove('active')
       }
-      let x = document.getElementById("item" + index);
-      x.classList.add("active");
+      let x = document.getElementById('item' + index)
+      x.classList.add('active')
     },
-  }
+  },
 }
 </script>
 
 <style scoped>
-
 .v-navigation-drawer__border {
   display: none;
 }
 
 .v-list-item {
-  background-color: #010324;
+  background-color: #4e776f;
   border: none;
-  color: white !important;
-  text-align: center;
+  color: #fff !important;
   width: 210px;
   border-radius: 5px 5px 5px 5px;
   margin: 40px 20px 40px 20px;
@@ -100,12 +120,15 @@ export default {
 }
 
 .v-list-item:hover {
-  background-color: #39ace7;
+  background-color: #d2afad;
+  color: #ffffff !important;
 }
 
 .active {
-  background-color: #39ace7;
+  background-color: #d2afad;
+  color: #ffffff !important;
 }
+
 .v-list-item:active {
   -moz-transform: scale(0.95);
   -webkit-transform: scale(0.95);
@@ -113,6 +136,7 @@ export default {
   -ms-transform: scale(0.95);
   transform: scale(0.95);
 }
+
 a {
   text-decoration: none;
 }

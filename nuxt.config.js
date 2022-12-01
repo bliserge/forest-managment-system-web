@@ -3,8 +3,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - befa',
-    title: 'befa',
+    titleTemplate: '%s - FMS',
+    title: 'FMS',
     htmlAttrs: {
       lang: 'en'
     },
@@ -15,7 +15,15 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href: 'httpshttps://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap&display=swap'
+      },
+      {
+        rel: 'stylesheet',
+        href: '@/assets/css/app.css'
+      },
     ]
   },
 
@@ -30,6 +38,7 @@ export default {
     '@/plugins/element-ui',
     {src: '~/plugins/vee-validate.js', ssr: false},
     '@/plugins/vue-quill-editor.client.js',
+    '@/plugins/mixins.js',
     {src: '~/plugins/axios', ssr: false}
   ],
 

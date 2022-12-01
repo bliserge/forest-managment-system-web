@@ -22,6 +22,7 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: 'Quill',
   props: {
     // eslint-disable-next-line vue/require-prop-types, vue/require-default-prop
