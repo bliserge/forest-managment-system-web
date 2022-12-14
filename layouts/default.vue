@@ -15,7 +15,8 @@
     <v-navigation-drawer v-model="drawer" app color="#F2F6F5" dark>
       <v-sheet class="pa-4" color="#F2F6F5">
         <v-row class="pa-4">
-          <v-icon color="#7B0000" size="40">mdi-logout</v-icon>
+            <img src="@/assets/images/avatars/logo.png" alt="" width="200">
+          <!-- <v-icon color="#7B0000" size="40">mdi-logout</v-icon> -->
         </v-row>
       </v-sheet>
 
@@ -71,16 +72,18 @@ export default {
     if (localStorage.getItem('profile')) {
       this.user = JSON.parse(localStorage.getItem('profile'))
     }
-    this.links.push({
-        icon: 'mdi-file-document-outline',
-        link: 'Categories',
-        to: 'categories',
-      })
+    if(this.user.type == 1) {
       this.links.push({
-        icon: 'mdi-account-group',
-        link: 'Users',
-        to: 'users',
-      })
+          icon: 'mdi-file-document-outline',
+          link: 'Categories',
+          to: 'categories',
+        })
+        this.links.push({
+          icon: 'mdi-account-group',
+          link: 'Users',
+          to: 'users',
+        })
+    }
   },
   created() {
     // this.setActiveItem(0)

@@ -28,7 +28,7 @@
                   </v-icon>
                 </v-col>
                 <v-col class="ml-5">
-                  <v-card-title> All Plots </v-card-title>
+                  <v-card-title> All Forests </v-card-title>
                   <v-card-subtitle> 00000 </v-card-subtitle>
                 </v-col>
               </v-row>
@@ -131,7 +131,7 @@
             >
               <v-tab>Planted trees</v-tab>
               <v-tab>Harvest Requests</v-tab>
-              <v-tab>Plots registration</v-tab>
+              <v-tab>Forests registration</v-tab>
               <v-tab-item>
                 <v-data-table
                   :headers="treesHeaders"
@@ -152,8 +152,8 @@
               </v-tab-item>
               <v-tab-item>
                 <v-data-table
-                  :headers="headers"
-                  :items="requestItems"
+                  :headers="forestHeaders"
+                  :items="forestItems"
                   :search="search"
                   :loading="loading"
                 >
@@ -385,14 +385,27 @@ export default {
           sortable: true,
           value: 'date',
         },
-        { text: 'Names', value: 'names' },
+        { text: 'Owner Names', value: 'names' },
         { text: 'Phone', value: 'phone' },
-        { text: 'District', value: 'district' },
+        { text: 'Forest UPI', value: 'upi' },
         { text: 'Sector', value: 'sector' },
         { text: 'Status', value: 'status' },
         { text: 'Action', value: 'action' },
       ],
       requestItems: [],
+      forestHeaders: [
+        {
+          text: '#',
+          align: 'start',
+          sortable: true,
+          value: 'id',
+        },
+        { text: 'Owner Names', value: 'names' },
+        { text: 'UPI', value: 'text' },
+        { text: 'Area', value: 'area' },
+        { text: 'Sector', value: 'sector' },
+      ],
+      forestItems:[],
       loading: false,
       saveLoading: false,
       isDetails: false,
@@ -410,9 +423,11 @@ export default {
         },
         { text: 'Names', value: 'names' },
         { text: 'Phone', value: 'phone' },
+        { text: 'Forest UPI', value: 'upi' },
         { text: 'District', value: 'district' },
         { text: 'Sector', value: 'sector' },
         { text: 'Number of Tress', value: 'trees' },
+        { text: 'Plantation Date', value: 'date' },
       ],
       treesItems: [],
     }
@@ -423,19 +438,40 @@ export default {
     if (process.browser) {
       if (localStorage.getItem('profile'))
         this.user = JSON.parse(localStorage.getItem('profile'))
+
+      this.getAllPlantations()
+      this.getAllRequests()
+      this.getForests()
     }
   },
   methods: {
     getAllRequests() {
       this.loading = true
       this.$axios
-        .get('getAllRequests')
+        .get('getAllRequests?sector='+this.user.location)
         .then((res) => {
           this.requestItems = res.data.data
         })
         .finally(() => {
           this.loading = false
         })
+    },
+    getAllPlantations() {
+      this.loading = true
+      this.$axios
+        .get('getAllPlatations?sector='+this.user.location)
+        .then((res) => {
+          this.treesItems = res.data.data
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    getForests() {
+      this.$axios.get("getForests?sector="+this.user.location)
+      .then(res => {
+        this.forestItems = res.data
+      })
     },
   },
 }

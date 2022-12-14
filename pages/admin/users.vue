@@ -1,12 +1,25 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <v-app>
-    <h2 style="color: #424242" class="ml-4">Users</h2>
-    <v-breadcrumbs :items="crumbsItems">
-      <template v-slot:divider>
-        <v-icon>mdi-chevron-right</v-icon>
-      </template>
-    </v-breadcrumbs>
+    <v-row>
+      <v-col>
+        <v-card elevation="0" color="#F8F8F8" class="pa-0">
+          <v-row>
+            <v-col>
+              <v-card-title class="ml-5">Users</v-card-title>
+              <v-card-subtitle>
+                <v-breadcrumbs :items="crumbsItems">
+                  <template v-slot:divider>
+                    <v-icon>mdi-chevron-right</v-icon>
+                  </template>
+                </v-breadcrumbs>
+              </v-card-subtitle>
+            </v-col>
+            <v-icon color="#7B0000" size="40" class="mr-5" @click="logout">mdi-logout</v-icon>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
     <v-row class="pl-4 pr-4 mt-5">
       <v-col>
         <v-card>
@@ -30,125 +43,135 @@
               :search="search"
               :loading="loading"
             >
-            <template v-slot:[`item.action`]>
-              <v-btn outlined color="#4E776F" @click="isNewPost = true; getDeptFormItems() ; getDeductionsForm()">add Post</v-btn>
-            </template>
+              <template v-slot:[`item.action`] = '{ item }'>
+                <v-btn
+                  x-small
+                  color="#4E776F"
+                  outlined
+                  fab
+                  @click="
+                    dialog = true
+                    slctItem = item
+                  "
+                  ><v-icon>mdi-lead-pencil</v-icon></v-btn
+                >
+              </template>
+              <template v-slot:[`item.id`] = '{ index }'>
+                {{( index + 1)}}
+              </template>
             </v-data-table>
-          </v-card-text> </v-card
-        >
-      </v-col>
-      <v-col v-if="isNewPost" cols="12" md="5" lg="5">
-        <v-card>
-          <v-row justify="space-between" class="pl-4 pr-4">
-            <v-card-title> Add Post in User </v-card-title>
-            <v-btn
-              x-small
-              class="mr-3 mt-3"
-              @click="isNewPost = false"
-              fab
-              elevation="0"
-              color="error"
-              dark
-              ><v-icon>mdi-close</v-icon></v-btn
-            >
-          </v-row>
-          <validation-observer ref="form">
-            <v-card-text class="py-0">
-              <v-col class="pb-0">
-                <label contenteditable="true">Post Title </label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="postTitle"
-                    :error="errors[0] ? true : false"
-                    outlined
-                    type="text"
-                    dense
-                    class="new-group-field"
-                  ></v-text-field>
-                </validation-provider>
-                <label>User</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-select
-                    v-model="postDept"
-                    :error="errors[0] ? true : false"
-                    :items="deptFormItems"
-                    dense
-                    outlined
-                    class="new-group-field"
-                  ></v-select>
-                </validation-provider>
-                <v-divider inset/>
-                <v-card-subtitle>
-                  Finances
-                </v-card-subtitle>
-                <label>Salary</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="salary"
-                    :error="errors[0] ? true : false"
-                    dense
-                    outlined
-                    class="new-group-field"
-                  ></v-text-field>
-                </validation-provider>
-                <label>Deductions</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-autocomplete
-                    v-model="postddct"
-                    :error="errors[0] ? true : false"
-                    :items="ddtionItems"
-                    dense
-                    outlined
-                    class="new-group-field"
-                    chips
-                    small-chips
-                    multiple
-                  ></v-autocomplete>
-                </validation-provider>
-              </v-col>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn
-                color="info"
-                elevation="0"
-                @click="addJobPost"
-                :loading="saveLoading"
-                :disabled="saveLoading">
-                Save
-              </v-btn>
-            </v-card-actions>
-          </validation-observer>
+          </v-card-text>
         </v-card>
       </v-col>
-      <v-dialog v-model="dialog" max-width="490">
+      <v-dialog v-model="dialog" max-width="790">
         <v-card>
-          <v-card-title class="text-h5">
-            User title
-          </v-card-title>
+          <v-card-title class="text-h5"> Regster New User </v-card-title>
           <v-card-text class="pl-4 pr-4">
             <validation-observer ref="form">
-              <label contenteditable="true">Title </label>
-              <validation-provider rules="required" v-slot="{ errors }">
-                <v-text-field
-                  v-model="title"
-                  :error="errors[0] ? true : false"
-                  outlined
-                  type="text"
-                  dense
-                  class="new-group-field"
-                ></v-text-field>
-              </validation-provider>
+              <v-row>
+                <v-col>
+                  <label class="mb-3">Full Names </label>
+                  <validation-provider rules="required" v-slot="{ errors }">
+                    <v-text-field
+                      v-model="names"
+                      hint="Full Names"
+                      :error="errors[0] ? true : false"
+                      outlined
+                      type="text"
+                      dense
+                      class="new-group-field"
+                    ></v-text-field>
+                  </validation-provider>
+                </v-col>
+                <v-col>
+                  <label class="mb-3">Phone </label>
+                  <validation-provider rules="required" v-slot="{ errors }">
+                    <v-text-field
+                      v-model="Phone"
+                      hint="Phone Number"
+                      :error="errors[0] ? true : false"
+                      outlined
+                      type="text"
+                      dense
+                      class="new-group-field"
+                    ></v-text-field>
+                  </validation-provider>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <label class="mb-3">Prorince </label>
+                  <validation-provider rules="required" v-slot="{ errors }">
+                    <v-autocomplete
+                      v-model="province"
+                      :items="provinceItems"
+                      outlined
+                      dense
+                      :error="errors[0] ? true : false"
+                      chips
+                      small-chips
+                      label="Province"
+                      @change="getDistricts()"
+                    ></v-autocomplete>
+                  </validation-provider>
+                </v-col>
+                <v-col>
+                  <label class="mb-3">District </label>
+                  <validation-provider rules="required" v-slot="{ errors }">
+                    <v-autocomplete
+                      v-model="district"
+                      :items="districtItems"
+                      outlined
+                      dense
+                      :error="errors[0] ? true : false"
+                      chips
+                      small-chips
+                      label="district"
+                      @change="getSectors()"
+                    ></v-autocomplete>
+                  </validation-provider>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <label class="mb-3">Sector </label>
+                  <validation-provider rules="required" v-slot="{ errors }">
+                    <v-autocomplete
+                      v-model="sector"
+                      :items="sectorItems"
+                      outlined
+                      dense
+                      :error="errors[0] ? true : false"
+                      chips
+                      small-chips
+                      label="Sector"
+                    ></v-autocomplete>
+                  </validation-provider>
+                </v-col>
+              </v-row>
             </validation-observer>
           </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
 
-            <v-btn color="green darken-1" text @click="dialog = false; title = ''">
+            <v-btn
+              color="green darken-1"
+              text
+              @click="
+                dialog = false
+                title = ''
+              "
+            >
               Cancel
             </v-btn>
 
-            <v-btn color="green darken-1" text @click="submit()" :loading="saveLoading">
+            <v-btn
+              color="green darken-1"
+              text
+              @click="submit()"
+              :loading="saveLoading"
+            >
               Save
             </v-btn>
           </v-card-actions>
@@ -193,42 +216,47 @@ export default {
           sortable: true,
           value: 'id',
         },
-        { text: 'Names', value: 'name' },
+        { text: 'Names', value: 'fullname' },
         { text: 'Phone Number', value: 'phone' },
         { text: 'Province', value: 'province' },
-        { text: 'Status', value: 'status' },
+        { text: 'District', value: 'district' },
+        { text: 'Sector', value: 'sector' },
         { text: 'Action', value: 'action' },
       ],
-      title: '',
       loading: false,
       saveLoading: false,
       UserItems: [],
       search: '',
-      isNewPost: false,
-      postTitle: '',
-      postDept: '',
-      salary: '',
-      postddct: [],
-      deptFormItems: [],
-      ddtionItems: [],
+      slctItem: [],
+      Phone: '',
+      names: '',
+      province: '',
+      provinceItems: [],
+      district: '',
+      districtItems: [],
+      sector: '',
+      sectorItems: [],
     }
   },
   mounted() {
     this.getUsers()
+    this.getProvinces()
   },
   methods: {
+    logout() {
+      this.logout()
+    },
     submit() {
       this.saveLoading = true
       this.$axios
         .post('addUser', {
-          title: this.title,
+          name: this.names,
+          phone: this.Phone,
+          location: this.sector
         })
         .then((res) => {
           this.getUsers()
-          console.log(res.data)
-        })
-        .catch((err) => {
-          console.log(err.response.data)
+          this.$toast.success(res.data.message)
         })
         .finally(() => {
           this.saveLoading = false
@@ -237,51 +265,34 @@ export default {
     },
     getUsers() {
       this.loading = true
-      this.$axios.get("getUsers")
-      .then(res => {
-        this.UserItems = res.data.data
-      })
-      .finally(() => {
-        this.loading = false
-      })
+      this.$axios
+        .get('getUsers')
+        .then((res) => {
+          this.UserItems = res.data
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
 
-    getDeptFormItems() {
-      this.$axios.get("getUsersForm")
+    getProvinces() {
+      this.$axios.get("getProvinces")
       .then(res => {
-        this.deptFormItems = res.data.data
+        this.provinceItems = res.data.data
       })
     },
-    getDeductionsForm() {
-      this.$axios.get("getDeductionsForm")
+    getDistricts() {
+      this.$axios.get("getDistricts/" + this.province)
       .then(res => {
-        this.ddtionItems = res.data.data
+        this.districtItems = res.data.data
       })
     },
-    addJobPost() {
-      this.saveLoading = true
-      this.$axios.post(
-        "addJobPost",
-        {
-          title : this.postTitle,
-          deptId: this.postDept,
-          salary: this.salary,
-          ddctn : this.postddct
-        }
-      )
+    getSectors() {
+      this.$axios.get("getSector/" + this.district)
       .then(res => {
-        console.log(res.data);
+        this.sectorItems = res.data.data
       })
-      .finally(() => {
-        this.saveLoading = false
-        this.isNewPost = false
-        this.postTitle = ''
-        this.postDept = ''
-        this.salary = ''
-        this.postddct =[]
-      })
-    }
-    
+    },
   },
 }
 </script>

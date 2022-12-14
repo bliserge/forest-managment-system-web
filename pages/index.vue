@@ -17,7 +17,7 @@
                       <div class="m-sm-4">
                         <div class="text-center">
                           <img
-                            src="@/assets/images/avatars/avatar.jpg"
+                            src="@/assets/images/avatars/avatar.png"
                             alt="Charles Hall"
                             class="img-fluid rounded-circle"
                             width="132"

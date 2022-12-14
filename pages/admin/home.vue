@@ -4,8 +4,15 @@
     <v-row>
       <v-col>
         <v-card elevation="0" color="#F8F8F8">
-          <v-card-title>Hi, John</v-card-title>
-          <v-card-subtitle>You are welcome to Dashboard</v-card-subtitle>
+          <v-row>
+            <v-col>
+              <v-card-title>Hi, John</v-card-title>
+              <v-card-subtitle>You are welcome to Dashboard</v-card-subtitle>
+            </v-col>
+            <v-icon color="#7B0000" size="40" class="mr-5" @click="logout1()"
+              >mdi-logout</v-icon
+            >
+          </v-row>
         </v-card>
       </v-col>
     </v-row>
@@ -28,7 +35,7 @@
                   </v-icon>
                 </v-col>
                 <v-col class="ml-5">
-                  <v-card-title> All Plots </v-card-title>
+                  <v-card-title> All Forest </v-card-title>
                   <v-card-subtitle> 00000 </v-card-subtitle>
                 </v-col>
               </v-row>
@@ -39,7 +46,7 @@
       <v-col cols="12" lg="3" md="3" sm="3">
         <v-card
           class="m-2 top"
-          style="border-bottom: 10px solid #A58A05 !important"
+          style="border-bottom: 10px solid #a58a05 !important"
         >
           <v-row justify="space-between">
             <v-col>
@@ -62,7 +69,7 @@
           </v-row>
         </v-card>
       </v-col>
-       <v-col cols="12" lg="3" md="3" sm="3">
+      <v-col cols="12" lg="3" md="3" sm="3">
         <v-card
           class="m-2 top"
           style="border-bottom: 10px solid #2c7221 !important"
@@ -123,15 +130,10 @@
             <v-spacer />
           </v-row>
           <v-card-text>
-            <v-tabs
-              background-color="#4e776f"
-              centered
-              dark
-              icons-and-text
-            >
+            <v-tabs background-color="#4e776f" centered dark icons-and-text>
               <v-tab>Planted trees</v-tab>
               <v-tab>Harvest Requests</v-tab>
-              <v-tab>Plots registration</v-tab>
+              <v-tab>Forest registration</v-tab>
               <v-tab-item>
                 <v-data-table
                   :headers="treesHeaders"
@@ -152,8 +154,8 @@
               </v-tab-item>
               <v-tab-item>
                 <v-data-table
-                  :headers="headers"
-                  :items="requestItems"
+                  :headers="forestHeaders"
+                  :items="forestItems"
                   :search="search"
                   :loading="loading"
                 >
@@ -163,121 +165,6 @@
           </v-card-text> </v-card
         >`
       </v-col>
-      <!-- <v-col v-if="isNew" cols="12" md="5" lg="5">
-        <v-card>
-          <v-row justify="space-between" class="pl-4 pr-4">
-            <v-card-title> New Employee </v-card-title>
-            <v-btn
-              x-small
-              class="mr-3 mt-3"
-              @click="isNew = false"
-              fab
-              elevation="0"
-              color="error"
-              dark
-              ><v-icon>mdi-close</v-icon></v-btn
-            >
-          </v-row>
-          <validation-observer ref="form">
-            <v-card-text class="py-0">
-              <v-col class="pb-0">
-                <label contenteditable="true">Names </label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="empName"
-                    :error="errors[0] ? true : false"
-                    outlined
-                    type="text"
-                    dense
-                    class="new-group-field"
-                  ></v-text-field>
-                </validation-provider>
-                <label>Employee Phone</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="empPhone"
-                    :error="errors[0] ? true : false"
-                    dense
-                    outlined
-                    class="new-group-field"
-                  ></v-text-field>
-                </validation-provider>
-                <label>Employee ID Number</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="empId"
-                    :error="errors[0] ? true : false"
-                    dense
-                    outlined
-                    class="new-group-field"
-                  ></v-text-field>
-                </validation-provider>
-                <label>Employee E-Mail</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-text-field
-                    v-model="empEmail"
-                    :error="errors[0] ? true : false"
-                    dense
-                    outlined
-                    class="new-group-field"
-                  ></v-text-field>
-                </validation-provider>
-
-                <label>Employee Gender</label>
-                <validation-provider rules="required" v-slot="{ errors }">
-                  <v-select
-                    v-model="empGender"
-                    :error="errors[0] ? true : false"
-                    dense
-                    :items="genderItems"
-                    outlined
-                    class="new-group-field"
-                  ></v-select>
-                </validation-provider>
-                <v-row>
-                  <v-col>
-                    <label>Employee department</label>
-                    <validation-provider rules="required" v-slot="{ errors }">
-                      <v-select
-                        v-model="empDept"
-                        :error="errors[0] ? true : false"
-                        dense
-                        :items="detptItems"
-                        outlined
-                        class="new-group-field"
-                      ></v-select>
-                    </validation-provider>
-                  </v-col>
-                  <v-col>
-                    <label>Employee Post</label>
-                    <validation-provider rules="required" v-slot="{ errors }">
-                      <v-select
-                        v-model="empPost"
-                        :error="errors[0] ? true : false"
-                        dense
-                        :items="postItems"
-                        outlined
-                        class="new-group-field"
-                      ></v-select>
-                    </validation-provider>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn
-                color="info"
-                elevation="0"
-                @click="submit"
-                :loading="saveLoading"
-                :disabled="saveLoading"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </validation-observer>
-        </v-card>
-      </v-col> -->
     </v-row>
   </v-app>
 </template>
@@ -402,7 +289,7 @@ export default {
         { value: 'F', text: 'Female' },
       ],
       treesHeaders: [
-      {
+        {
           text: 'Date',
           align: 'start',
           sortable: true,
@@ -415,6 +302,19 @@ export default {
         { text: 'Number of Tress', value: 'trees' },
       ],
       treesItems: [],
+      forestHeaders: [
+        {
+          text: '#',
+          align: 'start',
+          sortable: true,
+          value: 'id',
+        },
+        { text: 'Owner Names', value: 'names' },
+        { text: 'UPI', value: 'text' },
+        { text: 'Area', value: 'area' },
+        { text: 'Sector', value: 'sector' },
+      ],
+      forestItems:[],
     }
   },
   mounted() {
@@ -423,6 +323,10 @@ export default {
     if (process.browser) {
       if (localStorage.getItem('profile'))
         this.user = JSON.parse(localStorage.getItem('profile'))
+
+      this.getAllPlantations()
+      this.getAllRequests()
+      this.getForests()
     }
   },
   methods: {
@@ -436,6 +340,27 @@ export default {
         .finally(() => {
           this.loading = false
         })
+    },
+    getAllPlantations() {
+      this.loading = true
+      this.$axios
+        .get('getAllPlatations')
+        .then((res) => {
+          this.treesItems = res.data.data
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    getForests() {
+      this.$axios.get("getForests")
+      .then(res => {
+        this.forestItems = res.data
+      })
+    },
+    logout1() {
+      localStorage.clear()
+      this.$router.push('/')
     },
   },
 }

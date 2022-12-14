@@ -1,13 +1,26 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <v-app>
-    <h2 style="color: #424242" class="ml-4">Categories</h2>
-    <v-breadcrumbs :items="crumbsItems">
-      <template v-slot:divider>
-        <v-icon>mdi-chevron-right</v-icon>
-      </template>
-    </v-breadcrumbs>
-    <v-row class="pl-4 pr-4 mt-5">
+  <v-app id="app">
+    <v-row>
+      <v-col>
+        <v-card elevation="0" color="#F8F8F8">  
+          <v-row>
+            <v-col>
+              <v-card-title class="ml-5">Categories</v-card-title>
+              <v-card-subtitle>
+                <v-breadcrumbs :items="crumbsItems">
+                  <template v-slot:divider>
+                    <v-icon>mdi-chevron-right</v-icon>
+                  </template>
+                </v-breadcrumbs>
+              </v-card-subtitle>
+            </v-col>
+            <v-icon color="#7B0000" size="40" class="mr-5">mdi-logout</v-icon>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row class="pl-4 pr-4">
       <v-col>
         <v-card>
           <v-row>
