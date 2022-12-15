@@ -4,7 +4,7 @@
     <v-row>
       <v-col>
         <v-card elevation="0" color="#F8F8F8">
-          <v-card-title>Hi, John</v-card-title>
+          <v-card-title>Hi, {{user.name}}</v-card-title>
           <v-card-subtitle>You are welcome to Dashboard</v-card-subtitle>
         </v-card>
       </v-col>
@@ -448,7 +448,7 @@ export default {
     getAllRequests() {
       this.loading = true
       this.$axios
-        .get('getAllRequests?sector='+this.user.location)
+        .get('getAllRequest?sector='+this.user.location)
         .then((res) => {
           this.requestItems = res.data.data
         })

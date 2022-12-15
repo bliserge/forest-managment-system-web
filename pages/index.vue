@@ -121,16 +121,25 @@ export default {
 
   methods: {
     login() {
-      this.$axios
-        .post('login', {
-          phone: this.Phone,
-          password: this.Password,
-        })
-        .then((res) => {
-          localStorage.setItem('profile', JSON.stringify(res.data))
-          localStorage.setItem('token', res.data.accessToken)
-          this.$router.push(res.data.redirect)
-        })
+      this.$refs.form.validate().then(res => {
+        if (res) {
+          this.$axios
+            .post('login', {
+              phone: this.Phone,
+              password: this.Password,
+            })
+            .then((res) => {
+              localStorage.setItem('profile', JSON.stringify(res.data))
+              localStorage.setItem('token', res.data.accessToken)
+              this.$router.push(res.data.redirect)
+            })
+            .catch(err => {
+              this.$toast.error(err.response.data.message, {
+                position: 'top-right'
+              })
+            })
+        }
+      })
     },
   },
 }

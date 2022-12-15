@@ -246,17 +246,22 @@ export default {
   },
   methods: {
     register() {
-      this.$axios.post("register",{
-        name: this.names,
-        phone: this.Phone,
-        password: this.Password,
-        location: this.cell,
-        id: this.idNumber,
-      })
-      .then(res => {
-        this.$toast.success(res.data.message, {
-          position: 'top-right'
-        })
+      this.$refs.form.validate().then(res => {
+        if (res) {
+          this.$axios.post("register",{
+            name: this.names,
+            phone: this.Phone,
+            password: this.Password,
+            location: this.cell,
+            id: this.idNumber,
+          })
+          .then(res => {
+            this.$toast.success(res.data.message, {
+              position: 'top-right'
+            })
+    
+          })
+        }
       })
     },
     getProvinces() {

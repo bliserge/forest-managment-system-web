@@ -6,7 +6,7 @@
         <v-card elevation="0" color="#F8F8F8">
           <v-row>
             <v-col>
-              <v-card-title>Hi, John</v-card-title>
+              <v-card-title>Hi, {{ user.name }}</v-card-title>
               <v-card-subtitle>You are welcome to Dashboard</v-card-subtitle>
             </v-col>
             <v-icon color="#7B0000" size="40" class="mr-5" @click="logout()"
@@ -161,6 +161,7 @@
                   isTrees = true
                   isRequest = false
                   isPlot = false
+                  getAllPlantations()
                 "
                 >Planted trees</v-tab
               >
@@ -169,6 +170,7 @@
                   isTrees = false
                   isRequest = true
                   isPlot = false
+                  getAllRequests()
                 "
                 >Harvest Requests</v-tab
               >
@@ -177,6 +179,7 @@
                   isTrees = false
                   isRequest = false
                   isPlot = true
+                  getForests()
                 "
                 >Forest registration</v-tab
               >
@@ -215,7 +218,9 @@
                 >
                 <v-card-text class="pl-4 pr-4">
                   <validation-observer ref="form">
-                    <label contenteditable="true">Forest (*choose using UPI) </label>
+                    <label contenteditable="true"
+                      >Forest (*choose using UPI)
+                    </label>
                     <validation-provider rules="required" v-slot="{ errors }">
                       <v-autocomplete
                         v-model="forest"
@@ -226,7 +231,6 @@
                         chips
                         small-chips
                         label="Outlined"
-                        multiple
                       ></v-autocomplete>
                     </validation-provider>
                     <label contenteditable="true">Category </label>
@@ -240,7 +244,6 @@
                         chips
                         small-chips
                         label="Outlined"
-                        multiple
                       ></v-autocomplete>
                     </validation-provider>
                     <label contenteditable="true">Quantity</label>
@@ -273,8 +276,8 @@
 
                   <v-btn
                     color="green darken-1"
-                    text
-                    @click="saveRequest()"
+                    dark
+                    @click="savePlantation()"
                     :loading="saveLoading"
                   >
                     Save
@@ -285,11 +288,13 @@
             <v-dialog v-model="dialogRequest" max-width="490">
               <v-card>
                 <v-card-title class="text-h5"
-                  >Register New Plantation</v-card-title
+                  >Request forest harvest</v-card-title
                 >
                 <v-card-text class="pl-4 pr-4">
                   <validation-observer ref="form">
-                    <label contenteditable="true">Forest (*choose using UPI) </label>
+                    <label contenteditable="true"
+                      >Forest ( *choose using UPI )
+                    </label>
                     <validation-provider rules="required" v-slot="{ errors }">
                       <v-autocomplete
                         v-model="forest"
@@ -300,7 +305,6 @@
                         chips
                         small-chips
                         label="Outlined"
-                        multiple
                       ></v-autocomplete>
                     </validation-provider>
                     <label contenteditable="true">Tree Category </label>
@@ -314,7 +318,6 @@
                         chips
                         small-chips
                         label="Outlined"
-                        multiple
                       ></v-autocomplete>
                     </validation-provider>
                     <label contenteditable="true">Quantity</label>
@@ -347,8 +350,8 @@
 
                   <v-btn
                     color="green darken-1"
-                    text
-                    @click="savePlantation()"
+                    dark
+                    @click="saveRequest()"
                     :loading="saveLoading"
                   >
                     Save
@@ -695,7 +698,7 @@ export default {
           sortable: true,
           value: 'id',
         },
-        { text: 'Names', value: 'names' },
+        { text: 'Names', value: 'name' },
         { text: 'Phone', value: 'phone' },
         { text: 'District', value: 'district' },
         { text: 'Sector', value: 'sector' },
@@ -714,25 +717,8 @@ export default {
         { text: 'Area', value: 'area' },
         { text: 'Sector', value: 'sector' },
       ],
-      forestItems:[],
-      requestItems: [
-        {
-          id: 1,
-          names: 'John',
-          phone: '07842314',
-          district: 'Gasabo',
-          sector: 'Gisozi',
-          status: 'Pending',
-        },
-        {
-          id: 2,
-          names: 'John',
-          phone: '07842314',
-          district: 'Gasabo',
-          sector: 'Gisozi',
-          status: 'Approved',
-        },
-      ],
+      forestItems: [],
+      requestItems: [],
       loading: false,
       saveLoading: false,
       isDetails: false,
@@ -748,7 +734,7 @@ export default {
           sortable: true,
           value: 'date',
         },
-        { text: 'Names', value: 'names' },
+        { text: 'Names', value: 'name' },
         { text: 'Phone', value: 'phone' },
         { text: 'District', value: 'district' },
         { text: 'Sector', value: 'sector' },
@@ -786,7 +772,7 @@ export default {
     if (process.browser) {
       if (localStorage.getItem('profile'))
         this.user = JSON.parse(localStorage.getItem('profile'))
-        
+
       this.getProvinces()
       this.getAllPlantations()
       this.getAllRequests()
@@ -797,20 +783,21 @@ export default {
   methods: {
     getCategories() {
       this.loading = true
-      this.$axios.get("getAllTreeCategories")
-      .then(res => {
-        this.categoryItems = res.data.data
-      })
-      .finally(() => {
-        this.loading = false
-      })
+      this.$axios
+        .get('getAllTreeCategories')
+        .then((res) => {
+          this.categoryItems = res.data.data
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     getAllRequests() {
       this.loading = true
       this.$axios
-        .get('getAllRequests/'+this.user.id)
+        .get('getAllRequest/' + this.user.id)
         .then((res) => {
-          this.requestItems = res.data.data
+          this.requestItems = res.data
         })
         .finally(() => {
           this.loading = false
@@ -819,9 +806,9 @@ export default {
     getAllPlantations() {
       this.loading = true
       this.$axios
-        .get('getAllPlatations/'+this.user.id)
+        .get('getAllPlatations/' + this.user.id)
         .then((res) => {
-          this.treesItems = res.data.data
+          this.treesItems = res.data
         })
         .finally(() => {
           this.loading = false
@@ -885,48 +872,64 @@ export default {
         })
     },
     getForests() {
-      this.$axios.get("getForests/"+this.user.id)
-      .then(res => {
+      this.$axios.get('getForests/' + this.user.id).then((res) => {
         this.forestItems = res.data
       })
     },
     saveRequest() {
-      this.$axios.post(
-        "saveRequest",
-        {
+      this.saveLoading = true
+      this.$axios
+        .post('saveRequest', {
           forest: this.forest,
           trc: this.category,
           qty: this.quantity,
-          owner: this.user.id
-        }
-      )
-      .then(res => {
-        this.$toast.success(res.data.message, {
+          owner: this.user.id,
+        })
+        .then((res) => {
+          this.$toast.success(res.data.message, {
             position: 'top-right',
           })
-      })
-      .finally(() => {
-        this.dialogRequest = false
-      })
+        })
+        .catch((err) => {
+          this.$toast.error(err.response.data.message, {
+            position: 'top-right',
+          })
+        })
+        .finally(() => {
+          this.saveLoading = false
+          this.dialogRequest = false
+          this.forest = ''
+          this.category = ''
+          this.quantity = ''
+        })
     },
     savePlantation() {
-      this.$axios.post(
-        "",
-        {
+      this.saveLoading = true
+      this.$axios
+        .post('savePlantation', {
           forest: this.forest,
           trc: this.category,
           qty: this.quantity,
-          owner: this.user.id
-        }
-      )
-      .then(res => {
-        this.$toast.success(res.data.message, {
+          owner: this.user.id,
+        })
+        .then((res) => {
+          this.$toast.success(res.data.message, {
             position: 'top-right',
           })
-      })
-      .finally(() => {
-        this.dialog = false
-      })
+          this.getAllPlantations()
+        })
+        .catch((err) => {
+          this.$toast.error(err.response.data.message, {
+            position: 'top-right',
+          })
+        })
+        .finally(() => {
+          this.saveLoading = false
+          this.dialog = false
+          this.forest = ''
+          this.category = ''
+          this.quantity = ''
+        })
     },
     logout() {
       localStorage.clear()
