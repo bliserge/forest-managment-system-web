@@ -15,7 +15,7 @@
                 </v-breadcrumbs>
               </v-card-subtitle>
             </v-col>
-            <v-icon color="#7B0000" size="40" class="mr-5" @click="logout">mdi-logout</v-icon>
+            <v-icon color="#7B0000" size="40" class="mr-5" @click="logout()">mdi-logout</v-icon>
           </v-row>
         </v-card>
       </v-col>
@@ -244,7 +244,8 @@ export default {
   },
   methods: {
     logout() {
-      this.logout()
+      localStorage.clear()
+      this.$router.push('/')
     },
     submit() {
       this.saveLoading = true

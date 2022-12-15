@@ -4,8 +4,15 @@
     <v-row>
       <v-col>
         <v-card elevation="0" color="#F8F8F8">
-          <v-card-title>Hi, {{user.name}}</v-card-title>
-          <v-card-subtitle>You are welcome to Dashboard</v-card-subtitle>
+          <v-row>
+            <v-col>
+              <v-card-title>Hi, {{user.name}}</v-card-title>
+              <v-card-subtitle>You are welcome to Dashboard</v-card-subtitle>
+            </v-col>
+            <v-icon color="#7B0000" size="40" class="mr-5" @click="logout2()"
+              >mdi-logout</v-icon
+            >
+          </v-row>
         </v-card>
       </v-col>
     </v-row>
@@ -129,9 +136,9 @@
               dark
               icons-and-text
             >
-              <v-tab>Planted trees</v-tab>
-              <v-tab>Harvest Requests</v-tab>
-              <v-tab>Forests registration</v-tab>
+              <v-tab @click="getAllPlantations()">Planted trees</v-tab>
+              <v-tab @click="getAllRequests()">Harvest Requests</v-tab>
+              <v-tab @click="getForests()">Forests registration</v-tab>
               <v-tab-item>
                 <v-data-table
                   :headers="treesHeaders"
@@ -148,6 +155,12 @@
                   :search="search"
                   :loading="loading"
                 >
+                <template v-slot:[`item.action`]="{item}">
+                  <v-row v-if="item.stCode === '0'">
+                    <v-btn outlined color="green darken-3" x-small @click="approve(item.id, 1)">Approve</v-btn>
+                    <v-btn outlined color="red darken-3" x-small @click="approve(item.id, 2)">Deny</v-btn>
+                  </v-row>
+                </template>
                 </v-data-table>
               </v-tab-item>
               <v-tab-item>
@@ -385,7 +398,7 @@ export default {
           sortable: true,
           value: 'date',
         },
-        { text: 'Owner Names', value: 'names' },
+        { text: 'Owner Names', value: 'name' },
         { text: 'Phone', value: 'phone' },
         { text: 'Forest UPI', value: 'upi' },
         { text: 'Sector', value: 'sector' },
@@ -421,7 +434,7 @@ export default {
           sortable: true,
           value: 'date',
         },
-        { text: 'Names', value: 'names' },
+        { text: 'Names', value: 'name' },
         { text: 'Phone', value: 'phone' },
         { text: 'Forest UPI', value: 'upi' },
         { text: 'District', value: 'district' },
@@ -430,6 +443,7 @@ export default {
         { text: 'Plantation Date', value: 'date' },
       ],
       treesItems: [],
+      user: [],
     }
   },
   mounted() {
@@ -450,7 +464,7 @@ export default {
       this.$axios
         .get('getAllRequest?sector='+this.user.location)
         .then((res) => {
-          this.requestItems = res.data.data
+          this.requestItems = res.data
         })
         .finally(() => {
           this.loading = false
@@ -461,7 +475,7 @@ export default {
       this.$axios
         .get('getAllPlatations?sector='+this.user.location)
         .then((res) => {
-          this.treesItems = res.data.data
+          this.treesItems = res.data
         })
         .finally(() => {
           this.loading = false
@@ -472,6 +486,23 @@ export default {
       .then(res => {
         this.forestItems = res.data
       })
+    },
+    approve( id,status = 1) {
+      this.saveLoading = true
+      this.$axios.post("approveRequest",{
+        status,
+        id
+      })
+      .then(res => {
+        this.$toast.success(res.data.message, {
+          position: 'top-right'
+        })
+        this.getAllRequests()
+      })
+    },
+    logout2() {
+      localStorage.clear()
+      this.$router.push('/')
     },
   },
 }

@@ -272,7 +272,7 @@ export default {
           sortable: true,
           value: 'date',
         },
-        { text: 'Names', value: 'names' },
+        { text: 'Names', value: 'name' },
         { text: 'Phone', value: 'phone' },
         { text: 'District', value: 'district' },
         { text: 'Sector', value: 'sector' },
@@ -315,6 +315,7 @@ export default {
         { text: 'Sector', value: 'sector' },
       ],
       forestItems:[],
+      user: [],
     }
   },
   mounted() {
@@ -335,7 +336,7 @@ export default {
       this.$axios
         .get('getAllRequest')
         .then((res) => {
-          this.requestItems = res.data.data
+          this.requestItems = res.data
         })
         .finally(() => {
           this.loading = false
@@ -346,7 +347,7 @@ export default {
       this.$axios
         .get('getAllPlatations')
         .then((res) => {
-          this.treesItems = res.data.data
+          this.treesItems = res.data
         })
         .finally(() => {
           this.loading = false
