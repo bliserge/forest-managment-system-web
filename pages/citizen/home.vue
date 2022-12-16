@@ -764,6 +764,7 @@ export default {
       pdfFiles: [],
       imgFiles: [],
       forest: '',
+      user: [],
     }
   },
   mounted() {

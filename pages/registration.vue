@@ -259,7 +259,17 @@ export default {
             this.$toast.success(res.data.message, {
               position: 'top-right'
             })
-    
+            this.names = ''
+            this.Phone = ''
+            this.Password = ''
+            this.cell = ''
+            this.idNumber = ''
+            this.$router.push("/")
+          })
+          .catch(err => {
+            this.$toast.error(err.response.data.message, {
+              position: 'top-right'
+            })
           })
         }
       })
